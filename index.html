@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOPSENTRY // Autonomous Neural Cyber Defense</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#030712',
+                            panel: '#0B1120',
+                            border: '#1E293B',
+                            neon: '#00F0FF',
+                            emerald: '#00FF9D',
+                            alert: '#FF0055',
+                            purple: '#9D00FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Cyberpunk Scanline Effect */
+        .scanlines {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 6px 100%;
+        }
+        .glow-neon {
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.35);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 30px rgba(0, 255, 157, 0.35);
+        }
+        .glow-alert {
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.35);
+        }
+        @keyframes radar-sweep {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .radar-beam {
+            animation: radar-sweep 4s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-cyber-black text-slate-100 font-sans antialiased overflow-x-hidden relative selection:bg-cyber-neon selection:text-black">
+
+    <!-- Interactive Canvas Background -->
+    <canvas id="neuralCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+    <!-- Top Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-cyber-black/85 backdrop-blur-xl border-b border-cyber-border">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="playCyberSound('click')">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyber-neon via-teal-400 to-cyber-emerald flex items-center justify-center text-black font-black text-xl shadow-lg glow-neon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-tight text-white font-mono">GOP<span class="text-cyber-neon">SENTRY</span></span>
+                    <span class="hidden sm:inline-block text-[10px] ml-2 px-2 py-0.5 rounded bg-cyber-neon/10 text-cyber-neon border border-cyber-neon/30 font-mono tracking-widest font-bold">NEURAL-OS</span>
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-mono tracking-wider text-slate-400">
+                <a href="#radar" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-satellite-dish text-xs"></i> THREAT RADAR</a>
+                <a href="#terminal" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-terminal text-xs"></i> DEFENSE CLI</a>
+                <a href="#scanner" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-radar text-xs"></i> LIVE AUDIT</a>
+                <a href="#founder" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-xs"></i> ARCHITECT</a>
+            </div>
+
+            <!-- Sound & Connect Toggle -->
+            <div class="flex items-center space-x-4">
+                <button id="audioToggle" onclick="toggleAudio()" class="w-10 h-10 rounded-xl bg-cyber-panel border border-cyber-border text-slate-400 hover:text-cyber-neon transition flex items-center justify-center text-sm" title="Toggle SFX Audio">
+                    <i id="audioIcon" class="fa-solid fa-volume-high text-cyber-emerald"></i>
+                </button>
+                <a href="https://github.com/gopsentry" target="_blank" onclick="playCyberSound('launch')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-bold bg-cyber-neon text-black hover:bg-white transition duration-300 shadow-lg glow-neon flex items-center gap-2">
+                    <i class="fa-brands fa-github text-sm"></i>
+                    <span>DEPLOY HUB</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-36 pb-20 z-10">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <!-- Pulsing Telemetry Status -->
+            <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-cyber-panel border border-cyber-neon/30 text-xs font-mono text-cyber-neon mb-8 shadow-inner">
+                <span class="w-2.5 h-2.5 rounded-full bg-cyber-emerald animate-ping"></span>
+                <span>SYSTEM ZERO :: LIVE THREAT INTERCEPTION ACTIVE</span>
+            </div>
+
+            <!-- Core Headline -->
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter uppercase text-white leading-none max-w-5xl mx-auto">
+                Next-Gen <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-neon via-teal-300 to-cyber-emerald">AI Sentinel</span> Defense.
+            </h1>
+
+            <p class="mt-8 text-lg sm:text-xl text-slate-400 font-sans max-w-3xl mx-auto leading-relaxed">
+                Autonomous AI agents engineering predictive intrusion neutralization, quantum-ready cryptography, and zero-trust mesh architecture.
+            </p>
+
+            <!-- Quick Stats Bar -->
+            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto font-mono">
+                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
+                    <div id="stat1" class="text-2xl sm:text-3xl font-extrabold text-cyber-neon">2,841,920</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Attacks Nullified</div>
+                </div>
+                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-cyber-emerald">&lt; 0.04 ms</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Response Latency</div>
+                </div>
+                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-cyber-purple">100%</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Zero-Day Shield</div>
+                </div>
+                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white">AUTONOMOUS</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Sentry Mode</div>
+                </div>
+            </div>
+
+            <!-- CTA Buttons -->
+            <div class="mt-10 flex flex-wrap justify-center gap-4">
+                <a href="#scanner" onclick="playCyberSound('launch')" class="px-8 py-4 rounded-xl font-mono text-sm font-bold bg-gradient-to-r from-cyber-neon to-cyber-emerald text-black hover:opacity-90 transition duration-300 shadow-xl glow-neon flex items-center gap-2">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <span>EXECUTE SYSTEM SCAN</span>
+                </a>
+                <a href="#terminal" onclick="playCyberSound('click')" class="px-8 py-4 rounded-xl font-mono text-sm font-bold bg-cyber-panel border border-cyber-border text-slate-300 hover:text-white hover:border-cyber-neon transition flex items-center gap-2">
+                    <i class="fa-solid fa-terminal text-cyber-neon"></i>
+                    <span>VIEW LIVE CLI</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: LIVE 360° THREAT RADAR -->
+    <section id="radar" class="py-20 relative z-10 border-t border-cyber-border bg-cyber-panel/40">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center max-w-xl mx-auto mb-12">
+                <span class="text-xs font-mono text-cyber-neon tracking-widest uppercase font-bold">[ ACTIVE GRID TELEMETRY ]</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">360° Autonomous Sentry Radar</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <!-- Radar Circle Visual -->
+                <div class="relative w-72 h-72 sm:w-96 sm:h-96 mx-auto rounded-full border-2 border-cyber-neon/30 p-2 flex items-center justify-center bg-cyber-black/90 shadow-2xl glow-neon">
+                    <!-- Concentric Circles -->
+                    <div class="absolute inset-8 rounded-full border border-cyber-neon/20"></div>
+                    <div class="absolute inset-20 rounded-full border border-cyber-neon/20"></div>
+                    <div class="absolute inset-32 rounded-full border border-cyber-neon/20"></div>
+                    <!-- Crosshair Grid lines -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-full h-[1px] bg-cyber-neon/25"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="h-full w-[1px] bg-cyber-neon/25"></div>
+                    </div>
+                    <!-- Rotating Sweep Beam -->
+                    <div class="absolute inset-0 rounded-full radar-beam" style="background: conic-gradient(from 0deg, rgba(0, 240, 255, 0.4) 0deg, transparent 60deg);"></div>
+                    <!-- Target Blips -->
+                    <div class="absolute top-1/4 left-1/3 w-3 h-3 rounded-full bg-cyber-alert animate-ping"></div>
+                    <div class="absolute top-1/4 left-1/3 w-2 h-2 rounded-full bg-cyber-alert"></div>
+                    <div class="absolute bottom-1/3 right-1/4 w-3 h-3 rounded-full bg-cyber-emerald animate-ping"></div>
+                    <div class="absolute bottom-1/3 right-1/4 w-2 h-2 rounded-full bg-cyber-emerald"></div>
+                    <!-- Center Core -->
+                    <div class="w-4 h-4 rounded-full bg-cyber-neon shadow-lg glow-neon z-20"></div>
+                </div>
+
+                <!-- Live Interception Feed -->
+                <div class="space-y-4 font-mono text-xs">
+                    <div class="p-4 rounded-xl bg-cyber-black border border-cyber-border flex items-start gap-4">
+                        <div class="text-cyber-alert text-lg mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div>
+                            <div class="text-white font-bold">SQL Injection Attack Blocked</div>
+                            <div class="text-slate-400 text-[11px] mt-1">Vector: Port 443 | Origin: 185.220.101.5 | Status: Deflected</div>
+                            <span class="text-cyber-emerald text-[10px]">● Neural Signature Identified in 0.01ms</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-cyber-black border border-cyber-border flex items-start gap-4">
+                        <div class="text-cyber-neon text-lg mt-0.5"><i class="fa-solid fa-robot"></i></div>
+                        <div>
+                            <div class="text-white font-bold">Adversarial Prompt Injection Thwarted</div>
+                            <div class="text-slate-400 text-[11px] mt-1">Vector: LLM Agent Gateway | Status: Sanitized</div>
+                            <span class="text-cyber-emerald text-[10px]">● Automated Honeypot Protocol Executed</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-cyber-black border border-cyber-border flex items-start gap-4">
+                        <div class="text-cyber-emerald text-lg mt-0.5"><i class="fa-solid fa-shield-virus"></i></div>
+                        <div>
+                            <div class="text-white font-bold">Distributed DDoS Flood Suppressed</div>
+                            <div class="text-slate-400 text-[11px] mt-1">Volume: 1.2 Tbps | Routing: Scrubbed via Anycast Node</div>
+                            <span class="text-cyber-emerald text-[10px]">● Core Services at 100% Uptime</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: INTERACTIVE LIVE SECURITY AUDIT WIDGET -->
+    <section id="scanner" class="py-20 relative z-10 border-t border-cyber-border">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <span class="text-xs font-mono text-cyber-emerald tracking-widest uppercase font-bold">[ PUBLIC VULNERABILITY AUDITOR ]</span>
+            <h2 class="text-3xl sm:text-5xl font-black text-white mt-1 mb-4">Run an Instant AI Perimeter Audit</h2>
+            <p class="text-slate-400 text-sm max-w-xl mx-auto mb-8 font-sans">
+                Enter any domain, IP address or endpoint to test simulated perimeter vulnerability detection powered by Gopsentry.
+            </p>
+
+            <!-- Interactive Audit Box -->
+            <div class="p-6 sm:p-8 rounded-2xl bg-cyber-panel border-2 border-cyber-border shadow-2xl glow-neon text-left">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <span class="absolute left-4 top-3.5 text-slate-500 font-mono"><i class="fa-solid fa-globe"></i></span>
+                        <input id="targetInput" type="text" placeholder="example.com or 192.168.1.1" value="google.com" class="w-full bg-cyber-black border border-cyber-border rounded-xl pl-11 pr-4 py-3 font-mono text-sm text-white focus:outline-none focus:border-cyber-neon transition">
+                    </div>
+                    <button onclick="executeAudit()" class="px-6 py-3 rounded-xl bg-cyber-neon text-black font-mono font-bold text-sm hover:bg-white transition flex items-center justify-center gap-2 glow-neon">
+                        <i class="fa-solid fa-play text-xs"></i>
+                        <span>ANALYZE NOW</span>
+                    </button>
+                </div>
+
+                <!-- Scan Progress Bar -->
+                <div id="scanProgressContainer" class="hidden mt-6">
+                    <div class="flex justify-between text-xs font-mono text-slate-400 mb-1">
+                        <span id="scanStatusText">Injecting AI heuristics...</span>
+                        <span id="scanPercent">0%</span>
+                    </div>
+                    <div class="w-full h-2 bg-cyber-black rounded-full overflow-hidden border border-cyber-border">
+                        <div id="scanProgressBar" class="h-full bg-gradient-to-r from-cyber-neon to-cyber-emerald w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- Scan Results Display -->
+                <div id="scanResultCard" class="hidden mt-6 p-4 rounded-xl bg-cyber-black border border-cyber-emerald font-mono text-xs text-slate-300">
+                    <div class="flex items-center gap-2 text-cyber-emerald font-bold text-sm mb-2">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>PERIMETER EVALUATION COMPLETE</span>
+                    </div>
+                    <p class="text-slate-400">Target: <span id="scannedDomain" class="text-white"></span></p>
+                    <p class="mt-1 text-slate-300">SSL Integrity: <span class="text-cyber-emerald font-bold">A+ Valid</span> | Threat Score: <span class="text-cyber-neon font-bold">0.0 (Clean)</span></p>
+                    <p class="mt-1 text-slate-400">Recommendation: Ready for zero-trust Gopsentry daemon binding.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: INTERACTIVE LIVE DEFENSE TERMINAL -->
+    <section id="terminal" class="py-20 bg-cyber-panel/30 border-t border-cyber-border relative z-10">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
+                <div>
+                    <span class="text-xs font-mono text-cyber-purple tracking-widest uppercase font-bold">[ CLI EMULATOR ]</span>
+                    <h2 class="text-3xl font-extrabold text-white mt-1">Autonomous Threat Interceptor</h2>
+                </div>
+                <!-- Interactive Action Buttons -->
+                <div class="flex flex-wrap gap-2 mt-4 sm:mt-0 font-mono text-xs">
+                    <button onclick="simulateAction('scan')" class="px-3 py-1.5 rounded-lg bg-cyber-panel border border-cyber-border hover:border-cyber-neon text-cyber-neon transition">
+                        $ scan_mesh
+                    </button>
+                    <button onclick="simulateAction('ddos')" class="px-3 py-1.5 rounded-lg bg-cyber-panel border border-cyber-border hover:border-cyber-alert text-cyber-alert transition">
+                        $ test_ddos
+                    </button>
+                    <button onclick="simulateAction('crypto')" class="px-3 py-1.5 rounded-lg bg-cyber-panel border border-cyber-border hover:border-cyber-emerald text-cyber-emerald transition">
+                        $ sync_quantum
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terminal Window -->
+            <div class="rounded-2xl bg-black border border-cyber-border shadow-2xl overflow-hidden font-mono text-xs sm:text-sm">
+                <!-- Top Bar -->
+                <div class="px-4 py-3 bg-cyber-panel border-b border-cyber-border flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+                        <span class="ml-3 text-xs text-slate-400">gopsentry-agent-v1.4.2 [daemon: active]</span>
+                    </div>
+                    <span class="text-[11px] text-cyber-emerald font-bold flex items-center gap-1.5">
+                        <i class="fa-solid fa-lock"></i> ZERO-TRUST SECURED
+                    </span>
+                </div>
+
+                <!-- Console Body -->
+                <div id="terminalBody" class="p-6 space-y-2 h-72 overflow-y-auto leading-relaxed text-slate-300">
+                    <p class="text-slate-500">// GOPSENTRY Autonomous Neural Defense CLI Initialized...</p>
+                    <p class="text-cyber-neon">[SYS]: Loading predictive threat signatures (2,400,000 vectors loaded)... Done.</p>
+                    <p class="text-slate-400">[KERNEL]: Anycast firewall clusters bound across 42 global edge locations.</p>
+                    <p class="text-cyber-emerald">[SENTRY]: Monitoring active inbound streams. Status: 100% Secure.</p>
+                    <p class="text-yellow-400 font-bold">$ Ready. Select an action command above to simulate live interception_</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: ARCHITECT & FOUNDER SPOTLIGHT -->
+    <section id="founder" class="py-24 border-t border-cyber-border relative z-10 bg-cyber-black">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="p-8 sm:p-12 rounded-3xl bg-cyber-panel border-2 border-cyber-border shadow-2xl flex flex-col md:flex-row items-center gap-8">
+                <!-- Avatar Emblem -->
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-gradient-to-tr from-cyber-neon via-cyber-purple to-cyber-emerald p-1 shadow-2xl flex-shrink-0">
+                    <div class="w-full h-full bg-cyber-black rounded-2xl flex items-center justify-center text-5xl text-cyber-neon font-black font-mono">
+                        GS
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="text-left">
+                    <div class="inline-block px-3 py-1 rounded-full bg-cyber-neon/10 border border-cyber-neon/30 text-xs font-mono text-cyber-neon font-bold mb-3">
+                        FOUNDER & CHIEF ARCHITECT
+                    </div>
+                    <h3 class="text-3xl font-black text-white">Gopal Singh</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mt-3 font-sans">
+                        Founder of <strong>Gopsentry</strong>. Focused on adversarial machine learning, automated penetration testing engines, and self-healing cybersecurity infrastructure. Building tools to defend against the next generation of algorithmic threats.
+                    </p>
+
+                    <div class="mt-6 flex flex-wrap gap-4 font-mono text-xs">
+                        <span class="px-3 py-1.5 rounded-lg bg-cyber-black border border-cyber-border text-slate-300">#AI-Security</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-cyber-black border border-cyber-border text-slate-300">#CyberDefense</span>
+                        <span class="px-3 py-1.5 rounded-lg bg-cyber-black border border-cyber-border text-slate-300">#ZeroTrust</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 bg-black border-t border-cyber-border relative z-10 font-mono text-xs">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-cyber-neon text-black font-extrabold flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-shield"></i>
+                </div>
+                <span class="text-xl font-black tracking-tight text-white">GOPSENTRY</span>
+            </div>
+
+            <!-- Social Links -->
+            <div class="flex justify-center space-x-6 text-lg mb-8 text-slate-400">
+                <a href="https://github.com/gopsentry" target="_blank" class="hover:text-cyber-neon transition"><i class="fa-brands fa-github"></i></a>
+                <a href="https://linkedin.com" target="_blank" class="hover:text-cyber-neon transition"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="mailto:contact@gopsentry.com" class="hover:text-cyber-neon transition"><i class="fa-solid fa-envelope"></i></a>
+            </div>
+
+            <p class="text-slate-600">
+                &copy; 2026 GOPSENTRY. All Rights Reserved. Engineered with Pride by Gopal Singh.
+            </p>
+        </div>
+    </footer>
+
+    <!-- // FOR SEARCH Interactive Scripts: Web Audio API, Canvas Animation, CLI Logic -->
+    <script>
+        // 1. // FOR SEARCH WEB AUDIO API SYNTHESIZER (Sci-Fi Sound Effects)
+        let audioEnabled = true;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audioIcon');
+            if (audioEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-cyber-emerald';
+                playCyberSound('beep');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
+            }
+        }
+
+        function playCyberSound(type) {
+            if (!audioEnabled) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'beep') {
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'click') {
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'launch') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(200, now);
+                    osc.frequency.exponentialRampToValueAtTime(1800, now + 0.25);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                }
+            } catch(e) {}
+        }
+
+        // 2. // FOR SEARCH INTERACTIVE PARTICLES CANVAS (Neural Cyber Mesh)
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouse = { x: null, y: null };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.speedY = (Math.random() - 0.5) * 0.8;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
+            }
+            draw() {
+                ctx.fillStyle = '#00F0FF';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                for (let j = index + 1; j < particles.length; j++) {
+                    const dx = p.x - particles[j].x;
+                    const dy = p.y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${1 - dist / 120 * 0.8})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        // 3. // FOR SEARCH INTERACTIVE CLI SIMULATOR
+        function simulateAction(action) {
+            playCyberSound('beep');
+            const term = document.getElementById('terminalBody');
+            const time = new Date().toLocaleTimeString();
+
+            if (action === 'scan') {
+                term.innerHTML += `<p class="text-cyber-neon">[${time}] > EXECUTING: Mesh perimeter integrity verification...</p>`;
+                setTimeout(() => {
+                    term.innerHTML += `<p class="text-cyber-emerald">[${time}] > SCAN COMPLETE: 24 nodes verified. No unauthorized lateral movement detected.</p>`;
+                    term.scrollTop = term.scrollHeight;
+                }, 400);
+            } else if (action === 'ddos') {
+                term.innerHTML += `<p class="text-cyber-alert">[${time}] > ALERT: Simulated 400 Gbps volumetric traffic generated on ingress...</p>`;
+                setTimeout(() => {
+                    term.innerHTML += `<p class="text-cyber-emerald">[${time}] > COUNTERMEASURE: Anycast filter scrubbed 100% packets. Zero packet loss.</p>`;
+                    term.scrollTop = term.scrollHeight;
+                }, 400);
+            } else if (action === 'crypto') {
+                term.innerHTML += `<p class="text-cyber-purple">[${time}] > RE-KEYING: Rotating Kyber-1024 Quantum Post-Quantum Keys...</p>`;
+                setTimeout(() => {
+                    term.innerHTML += `<p class="text-cyber-emerald">[${time}] > SYNCED: All session tunnels upgraded to post-quantum confidentiality.</p>`;
+                    term.scrollTop = term.scrollHeight;
+                }, 400);
+            }
+            term.scrollTop = term.scrollHeight;
+        }
+
+        // 4. // FOR SEARCH INTERACTIVE AUDIT RUNNER
+        function executeAudit() {
+            playCyberSound('launch');
+            const target = document.getElementById('targetInput').value || 'target-domain.com';
+            const progressContainer = document.getElementById('scanProgressContainer');
+            const progressBar = document.getElementById('scanProgressBar');
+            const percentText = document.getElementById('scanPercent');
+            const statusText = document.getElementById('scanStatusText');
+            const resultCard = document.getElementById('scanResultCard');
+
+            resultCard.classList.add('hidden');
+            progressContainer.classList.remove('hidden');
+            progressBar.style.width = '0%';
+
+            let p = 0;
+            const interval = setInterval(() => {
+                p += 25;
+                progressBar.style.width = p + '%';
+                percentText.innerText = p + '%';
+                playCyberSound('beep');
+
+                if (p === 50) statusText.innerText = 'Analyzing SSL certificates and DNSSEC...';
+                if (p === 75) statusText.innerText = 'Evaluating AI firewall rules...';
+
+                if (p >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressContainer.classList.add('hidden');
+                        document.getElementById('scannedDomain').innerText = target;
+                        resultCard.classList.remove('hidden');
+                        playCyberSound('click');
+                    }, 400);
+                }
+            }, 300);
+        }
+
+        // 5. // FOR SEARCH LIVE TICKING STATS COUNTER
+        setInterval(() => {
+            const stat = document.getElementById('stat1');
+            if (stat) {
+                let current = parseInt(stat.innerText.replace(/,/g, ''));
+                current += Math.floor(Math.random() * 5) + 1;
+                stat.innerText = current.toLocaleString();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
