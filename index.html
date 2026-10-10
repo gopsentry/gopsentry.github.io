@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='44' fill='%23070C18'/%3E%3Cpath d='M100 35 L155 58 L155 112 C155 146 100 168 100 168 C100 168 45 146 45 112 L45 58 Z' fill='none' stroke='%2300F0FF' stroke-width='10'/%3E%3Cpolygon points='100,85 118,105 100,125 82,105' fill='%2300FF9D'/%3E%3Ccircle cx='100' cy='105' r='5' fill='%23FFFFFF'/%3E%3C/svg%3E">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300F0FF'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3C/svg%3E">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GOPSENTRY // Autonomous Neural Cyber Defense</title>
+    <title>GOPSENTRY // The Unbreakable Autonomous Cyber Defense Cloud</title>
+    <!-- Built-In Glowing Cyber Shield Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' rx='44' fill='%23030712'/%3E%3Cpath d='M100 25 L165 55 L165 115 C165 155 100 180 100 180 C100 180 35 155 35 115 L35 55 Z' fill='none' stroke='%2300F0FF' stroke-width='12'/%3E%3Cpolygon points='100,75 128,105 100,135 72,105' fill='%2300FF9D'/%3E%3Ccircle cx='100' cy='105' r='8' fill='%23FFFFFF'/%3E%3C/svg%3E">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -21,13 +22,14 @@
                 extend: {
                     colors: {
                         cyber: {
-                            black: '#030712',
-                            panel: '#0B1120',
+                            void: '#02040A',
+                            panel: '#080E1E',
+                            card: '#0D1528',
                             border: '#1E293B',
                             neon: '#00F0FF',
                             emerald: '#00FF9D',
                             alert: '#FF0055',
-                            purple: '#9D00FF'
+                            purple: '#A855F7'
                         }
                     },
                     fontFamily: {
@@ -40,536 +42,601 @@
     </script>
 
     <style>
-        /* Cyberpunk Scanline Effect */
-        .scanlines {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 4px, 6px 100%;
+        .glow-neon { box-shadow: 0 0 35px rgba(0, 240, 255, 0.3); }
+        .glow-emerald { box-shadow: 0 0 35px rgba(0, 255, 157, 0.3); }
+        .cyber-grid {
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
         }
-        .glow-neon {
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.35);
+        @keyframes radar-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
-        .glow-emerald {
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.35);
-        }
-        .glow-alert {
-            box-shadow: 0 0 30px rgba(255, 0, 85, 0.35);
-        }
-        @keyframes radar-sweep {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .radar-beam {
-            animation: radar-sweep 4s linear infinite;
-        }
+        .radar-sweep { animation: radar-spin 3.5s linear infinite; }
     </style>
 </head>
-<body class="bg-cyber-black text-slate-100 font-sans antialiased overflow-x-hidden relative selection:bg-cyber-neon selection:text-black">
+<body class="bg-cyber-void text-slate-100 font-sans antialiased overflow-x-hidden relative selection:bg-cyber-neon selection:text-black">
 
-    <!-- Interactive Canvas Background -->
-    <canvas id="neuralCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+    <!-- Interactive Background Neural Mesh -->
+    <canvas id="neuralCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-35"></canvas>
 
-    <!-- Top Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-cyber-black/85 backdrop-blur-xl border-b border-cyber-border">
+    <!-- Live Top Polymorphic Encryption Ticker Bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-black/95 border-b border-cyber-neon/20 py-1.5 px-4 font-mono text-[11px] flex items-center justify-between text-slate-400">
+        <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-cyber-emerald animate-ping"></span>
+            <span class="text-cyber-emerald font-bold">POLYMORPHIC SHIELD: ACTIVE</span>
+            <span class="hidden md:inline text-slate-600">|</span>
+            <span class="hidden md:inline">50ms Moving-Target Memory Morphing</span>
+        </div>
+        <div class="flex items-center space-x-2 truncate">
+            <span class="text-slate-500">QUANTUM-KEY:</span>
+            <span id="liveKeyHash" class="text-cyber-neon font-bold tracking-wider">0x9F8A...7E21B04C</span>
+        </div>
+    </div>
+
+    <!-- Main Navigation Bar -->
+    <nav class="fixed top-7 left-0 right-0 z-50 bg-cyber-void/85 backdrop-blur-xl border-b border-cyber-border">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="playCyberSound('click')">
-                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-cyber-neon via-teal-400 to-cyber-emerald flex items-center justify-center text-black font-black text-xl shadow-lg glow-neon">
-                    <i class="fa-solid fa-shield-halved"></i>
+            <!-- Custom SVG Brand Logo -->
+            <a href="#" class="flex items-center space-x-3 group" onclick="playSfx('click')">
+                <div class="w-11 h-11 rounded-xl bg-cyber-panel border border-cyber-neon/50 flex items-center justify-center shadow-lg glow-neon group-hover:scale-105 transition">
+                    <svg class="w-7 h-7" viewBox="0 0 200 200">
+                        <path d="M100 20 L170 50 L170 115 C170 160 100 185 100 185 C100 185 30 160 30 115 L30 50 Z" fill="none" stroke="#00F0FF" stroke-width="14"/>
+                        <polygon points="100,70 132,105 100,140 68,105" fill="#00FF9D"/>
+                        <circle cx="100" cy="105" r="10" fill="#FFFFFF"/>
+                    </svg>
                 </div>
                 <div>
                     <span class="text-2xl font-black tracking-tight text-white font-mono">GOP<span class="text-cyber-neon">SENTRY</span></span>
-                    <span class="hidden sm:inline-block text-[10px] ml-2 px-2 py-0.5 rounded bg-cyber-neon/10 text-cyber-neon border border-cyber-neon/30 font-mono tracking-widest font-bold">NEURAL-OS</span>
+                    <span class="block text-[9px] font-mono tracking-widest text-cyber-emerald uppercase">UNIFIED CYBER IMMUNE OS</span>
                 </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="hidden lg:flex items-center space-x-7 text-xs font-mono tracking-wider text-slate-300">
+                <a href="#unbreakable" onclick="playSfx('beep')" class="hover:text-cyber-neon transition">UNBREAKABLE CORE</a>
+                <a href="#ecosystem" onclick="playSfx('beep')" class="hover:text-cyber-neon transition">3-TIER ECOSYSTEM</a>
+                <a href="#simulator" onclick="playSfx('beep')" class="hover:text-cyber-neon transition">AI-VS-AI LAB</a>
+                <a href="#scanner" onclick="playSfx('beep')" class="hover:text-cyber-neon transition">PERIMETER AUDIT</a>
+                <a href="#architect" onclick="playSfx('beep')" class="hover:text-cyber-neon transition">FOUNDER</a>
             </div>
 
-            <!-- Links -->
-            <div class="hidden md:flex items-center space-x-8 text-sm font-mono tracking-wider text-slate-400">
-                <a href="#radar" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-satellite-dish text-xs"></i> THREAT RADAR</a>
-                <a href="#terminal" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-terminal text-xs"></i> DEFENSE CLI</a>
-                <a href="#scanner" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-radar text-xs"></i> LIVE AUDIT</a>
-                <a href="#founder" onclick="playCyberSound('beep')" class="hover:text-cyber-neon transition flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-xs"></i> ARCHITECT</a>
-            </div>
-
-            <!-- Sound & Connect Toggle -->
-            <div class="flex items-center space-x-4">
-                <button id="audioToggle" onclick="toggleAudio()" class="w-10 h-10 rounded-xl bg-cyber-panel border border-cyber-border text-slate-400 hover:text-cyber-neon transition flex items-center justify-center text-sm" title="Toggle SFX Audio">
-                    <i id="audioIcon" class="fa-solid fa-volume-high text-cyber-emerald"></i>
+            <!-- Controls -->
+            <div class="flex items-center space-x-3">
+                <button id="audioBtn" onclick="toggleAudio()" class="w-10 h-10 rounded-xl bg-cyber-panel border border-cyber-border text-cyber-emerald hover:border-cyber-neon transition flex items-center justify-center" title="Toggle Cyber Audio">
+                    <i id="audioIcon" class="fa-solid fa-volume-high text-sm"></i>
                 </button>
-                <a href="https://github.com/gopsentry" target="_blank" onclick="playCyberSound('launch')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-bold bg-cyber-neon text-black hover:bg-white transition duration-300 shadow-lg glow-neon flex items-center gap-2">
+                <a href="https://github.com/gopsentry" target="_blank" onclick="playSfx('launch')" class="px-5 py-2.5 rounded-xl font-mono text-xs font-extrabold bg-gradient-to-r from-cyber-neon to-cyber-emerald text-black hover:opacity-90 transition shadow-lg glow-neon flex items-center gap-2">
                     <i class="fa-brands fa-github text-sm"></i>
-                    <span>DEPLOY HUB</span>
+                    <span>COMMAND HUB</span>
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="relative pt-36 pb-20 z-10">
+    <!-- HERO SECTION: THE GRAND VISION -->
+    <section class="relative pt-44 pb-24 cyber-grid z-10">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <!-- Pulsing Telemetry Status -->
-            <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-cyber-panel border border-cyber-neon/30 text-xs font-mono text-cyber-neon mb-8 shadow-inner">
-                <span class="w-2.5 h-2.5 rounded-full bg-cyber-emerald animate-ping"></span>
-                <span>SYSTEM ZERO :: LIVE THREAT INTERCEPTION ACTIVE</span>
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cyber-panel border border-cyber-neon/40 text-xs font-mono text-cyber-neon mb-8 shadow-lg">
+                <i class="fa-solid fa-atom animate-spin"></i>
+                <span>MATHEMATICALLY UNBREAKABLE • AI-IMMUNE ARCHITECTURE</span>
             </div>
 
-            <!-- Core Headline -->
-            <h1 class="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter uppercase text-white leading-none max-w-5xl mx-auto">
-                Next-Gen <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-neon via-teal-300 to-cyber-emerald">AI Sentinel</span> Defense.
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter text-white uppercase leading-[1.05] max-w-6xl mx-auto">
+                One Platform. <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-neon via-white to-cyber-emerald">Absolute Cyber Immunity.</span>
             </h1>
 
-            <p class="mt-8 text-lg sm:text-xl text-slate-400 font-sans max-w-3xl mx-auto leading-relaxed">
-                Autonomous AI agents engineering predictive intrusion neutralization, quantum-ready cryptography, and zero-trust mesh architecture.
+            <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+                Engineered by <strong class="text-white underline decoration-cyber-neon">Gopal Kumar</strong>. Gopsentry is a unified global cyber defense operating system designed to neutralize every cyber crime, fraud, and rogue AI attack from a single autonomous command center.
             </p>
 
-            <!-- Quick Stats Bar -->
-            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto font-mono">
-                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
-                    <div id="stat1" class="text-2xl sm:text-3xl font-extrabold text-cyber-neon">2,841,920</div>
-                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Attacks Nullified</div>
+            <!-- Live Global Protection Counter Bar -->
+            <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto font-mono">
+                <div class="p-5 rounded-2xl bg-cyber-panel/90 border border-cyber-border hover:border-cyber-neon/50 transition">
+                    <div id="threatCounter" class="text-2xl sm:text-4xl font-black text-cyber-neon">4,918,402</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Global Threats Nullified</div>
                 </div>
-                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-cyber-emerald">&lt; 0.04 ms</div>
-                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Response Latency</div>
+                <div class="p-5 rounded-2xl bg-cyber-panel/90 border border-cyber-border hover:border-cyber-emerald/50 transition">
+                    <div class="text-2xl sm:text-4xl font-black text-cyber-emerald">0.00%</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">AI Breach Probability</div>
                 </div>
-                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-cyber-purple">100%</div>
-                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Zero-Day Shield</div>
+                <div class="p-5 rounded-2xl bg-cyber-panel/90 border border-cyber-border hover:border-cyber-purple/50 transition">
+                    <div class="text-2xl sm:text-4xl font-black text-cyber-purple">50 ms</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Polymorphic Core Morph</div>
                 </div>
-                <div class="p-4 rounded-xl bg-cyber-panel border border-cyber-border/80">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white">AUTONOMOUS</div>
-                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Sentry Mode</div>
+                <div class="p-5 rounded-2xl bg-cyber-panel/90 border border-cyber-border hover:border-white/50 transition">
+                    <div class="text-2xl sm:text-4xl font-black text-white">KYBER-1024</div>
+                    <div class="text-[11px] text-slate-400 uppercase tracking-widest mt-1">Post-Quantum Shield</div>
                 </div>
             </div>
 
-            <!-- CTA Buttons -->
+            <!-- Hero CTAs -->
             <div class="mt-10 flex flex-wrap justify-center gap-4">
-                <a href="#scanner" onclick="playCyberSound('launch')" class="px-8 py-4 rounded-xl font-mono text-sm font-bold bg-gradient-to-r from-cyber-neon to-cyber-emerald text-black hover:opacity-90 transition duration-300 shadow-xl glow-neon flex items-center gap-2">
-                    <i class="fa-solid fa-crosshairs"></i>
-                    <span>EXECUTE SYSTEM SCAN</span>
+                <a href="#simulator" onclick="playSfx('launch')" class="px-8 py-4 rounded-xl font-mono text-sm font-black bg-cyber-neon text-black hover:bg-white transition duration-300 shadow-xl glow-neon flex items-center gap-2.5">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>TEST AI-IMMUNE DEFENSE LAB</span>
                 </a>
-                <a href="#terminal" onclick="playCyberSound('click')" class="px-8 py-4 rounded-xl font-mono text-sm font-bold bg-cyber-panel border border-cyber-border text-slate-300 hover:text-white hover:border-cyber-neon transition flex items-center gap-2">
-                    <i class="fa-solid fa-terminal text-cyber-neon"></i>
-                    <span>VIEW LIVE CLI</span>
+                <a href="#ecosystem" onclick="playSfx('click')" class="px-8 py-4 rounded-xl font-mono text-sm font-bold bg-cyber-panel border border-cyber-border text-white hover:border-cyber-emerald transition flex items-center gap-2.5">
+                    <i class="fa-solid fa-layer-group text-cyber-emerald"></i>
+                    <span>EXPLORE ALL-IN-ONE ECOSYSTEM</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 1: LIVE 360° THREAT RADAR -->
-    <section id="radar" class="py-20 relative z-10 border-t border-cyber-border bg-cyber-panel/40">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center max-w-xl mx-auto mb-12">
-                <span class="text-xs font-mono text-cyber-neon tracking-widest uppercase font-bold">[ ACTIVE GRID TELEMETRY ]</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-1">360° Autonomous Sentry Radar</h2>
+    <!-- SECTION 1: WHY NO AI OR HACKER CAN EVER BREAK GOPSENTRY (THE 4 UNBREAKABLE PILLARS) -->
+    <section id="unbreakable" class="py-24 bg-cyber-panel/60 border-t border-cyber-border relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-cyber-neon tracking-widest uppercase font-bold">[ IMPENETRABLE DOCTRINE ]</span>
+                <h2 class="text-3xl sm:text-5xl font-black text-white mt-2">Why No AI Can Ever Hack Gopsentry</h2>
+                <p class="text-slate-400 mt-4 text-sm sm:text-base">
+                    Traditional firewalls wait for attacks to happen. Gopsentry eliminates the mathematical possibility of an exploit before a malicious AI can even read the system.
+                </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <!-- Radar Circle Visual -->
-                <div class="relative w-72 h-72 sm:w-96 sm:h-96 mx-auto rounded-full border-2 border-cyber-neon/30 p-2 flex items-center justify-center bg-cyber-black/90 shadow-2xl glow-neon">
-                    <!-- Concentric Circles -->
-                    <div class="absolute inset-8 rounded-full border border-cyber-neon/20"></div>
-                    <div class="absolute inset-20 rounded-full border border-cyber-neon/20"></div>
-                    <div class="absolute inset-32 rounded-full border border-cyber-neon/20"></div>
-                    <!-- Crosshair Grid lines -->
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="w-full h-[1px] bg-cyber-neon/25"></div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Pillar 1 -->
+                <div class="p-7 rounded-2xl bg-cyber-card border border-cyber-border hover:border-cyber-neon transition group">
+                    <div class="w-12 h-12 rounded-xl bg-cyber-neon/10 border border-cyber-neon/30 text-cyber-neon flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-square-root-variable"></i>
                     </div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="h-full w-[1px] bg-cyber-neon/25"></div>
-                    </div>
-                    <!-- Rotating Sweep Beam -->
-                    <div class="absolute inset-0 rounded-full radar-beam" style="background: conic-gradient(from 0deg, rgba(0, 240, 255, 0.4) 0deg, transparent 60deg);"></div>
-                    <!-- Target Blips -->
-                    <div class="absolute top-1/4 left-1/3 w-3 h-3 rounded-full bg-cyber-alert animate-ping"></div>
-                    <div class="absolute top-1/4 left-1/3 w-2 h-2 rounded-full bg-cyber-alert"></div>
-                    <div class="absolute bottom-1/3 right-1/4 w-3 h-3 rounded-full bg-cyber-emerald animate-ping"></div>
-                    <div class="absolute bottom-1/3 right-1/4 w-2 h-2 rounded-full bg-cyber-emerald"></div>
-                    <!-- Center Core -->
-                    <div class="w-4 h-4 rounded-full bg-cyber-neon shadow-lg glow-neon z-20"></div>
+                    <div class="text-xs font-mono text-cyber-neon mb-1">PILLAR 01</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Mathematical Formal Verification</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Just like \(2 + 2 = 4\) can never be disproven, Gopsentry's micro-kernel is mathematically proven to contain zero buffer overflows or memory vulnerabilities.
+                    </p>
                 </div>
 
-                <!-- Live Interception Feed -->
-                <div class="space-y-4 font-mono text-xs">
-                    <div class="p-4 rounded-xl bg-cyber-black border border-cyber-border flex items-start gap-4">
-                        <div class="text-cyber-alert text-lg mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                        <div>
-                            <div class="text-white font-bold">SQL Injection Attack Blocked</div>
-                            <div class="text-slate-400 text-[11px] mt-1">Vector: Port 443 | Origin: 185.220.101.5 | Status: Deflected</div>
-                            <span class="text-cyber-emerald text-[10px]">● Neural Signature Identified in 0.01ms</span>
-                        </div>
+                <!-- Pillar 2 -->
+                <div class="p-7 rounded-2xl bg-cyber-card border border-cyber-border hover:border-cyber-emerald transition group">
+                    <div class="w-12 h-12 rounded-xl bg-cyber-emerald/10 border border-cyber-emerald/30 text-cyber-emerald flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-shuffle"></i>
                     </div>
+                    <div class="text-xs font-mono text-cyber-emerald mb-1">PILLAR 02</div>
+                    <h3 class="text-xl font-bold text-white mb-3">50ms Polymorphic Morphing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Our Moving Target Defense re-shuffles system memory, ports, and cryptographic pathways every 50 milliseconds. An AI cannot hit a target that constantly changes shape.
+                    </p>
+                </div>
 
-                    <div class="p-4 rounded-xl bg-cyber-black border border-cyber-border flex items-start gap-4">
-                        <div class="text-cyber-neon text-lg mt-0.5"><i class="fa-solid fa-robot"></i></div>
-                        <div>
-                            <div class="text-white font-bold">Adversarial Prompt Injection Thwarted</div>
-                            <div class="text-slate-400 text-[11px] mt-1">Vector: LLM Agent Gateway | Status: Sanitized</div>
-                            <span class="text-cyber-emerald text-[10px]">● Automated Honeypot Protocol Executed</span>
-                        </div>
+                <!-- Pillar 3 -->
+                <div class="p-7 rounded-2xl bg-cyber-card border border-cyber-border hover:border-cyber-purple transition group">
+                    <div class="w-12 h-12 rounded-xl bg-cyber-purple/10 border border-cyber-purple/30 text-cyber-purple flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-spider"></i>
                     </div>
+                    <div class="text-xs font-mono text-cyber-purple mb-1">PILLAR 03</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Adversarial AI Mirror Trap</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        When a rogue AI or exploit bot probes Gopsentry, our defensive neural agents trap the attacker inside an infinite synthetic illusion (Phantom Honeypot) and freeze its weights.
+                    </p>
+                </div>
 
-                    <div class="p-4 rounded-xl bg-cyber-black border border-cyber-border flex items-start gap-4">
-                        <div class="text-cyber-emerald text-lg mt-0.5"><i class="fa-solid fa-shield-virus"></i></div>
-                        <div>
-                            <div class="text-white font-bold">Distributed DDoS Flood Suppressed</div>
-                            <div class="text-slate-400 text-[11px] mt-1">Volume: 1.2 Tbps | Routing: Scrubbed via Anycast Node</div>
-                            <span class="text-cyber-emerald text-[10px]">● Core Services at 100% Uptime</span>
+                <!-- Pillar 4 -->
+                <div class="p-7 rounded-2xl bg-cyber-card border border-cyber-border hover:border-cyber-alert transition group">
+                    <div class="w-12 h-12 rounded-xl bg-cyber-alert/10 border border-cyber-alert/30 text-cyber-alert flex items-center justify-center text-xl mb-5 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-cubes-stacked"></i>
+                    </div>
+                    <div class="text-xs font-mono text-cyber-alert mb-1">PILLAR 04</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Post-Quantum Lattice Lock</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Secured by multi-dimensional lattice cryptography (Kyber-1024 & Dilithium). Immune to both classical supercomputers and future quantum decryption.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: THE 3-TIER ALL-IN-ONE GLOBAL ECOSYSTEM (EVERY CYBER PROBLEM IN ONE PLACE) -->
+    <section id="ecosystem" class="py-24 border-t border-cyber-border relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-cyber-emerald tracking-widest uppercase font-bold">[ UNIFIED GLOBAL COMMAND ]</span>
+                <h2 class="text-3xl sm:text-5xl font-black text-white mt-2">Every Cyber Problem. Handled in One Place.</h2>
+                <p class="text-slate-400 mt-4 text-sm sm:text-base">
+                    From protecting an individual student against UPI/phishing scams to defending national power grids against state-sponsored cyber warfare.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Tier 1: Citizen & Consumer -->
+                <div class="p-8 rounded-3xl bg-gradient-to-b from-cyber-card to-cyber-void border-2 border-cyber-border hover:border-cyber-neon transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3 py-1 rounded-full bg-cyber-neon/10 text-cyber-neon font-mono text-xs font-bold">TIER 01 // CITIZEN SHIELD</span>
+                            <i class="fa-solid fa-user-shield text-2xl text-cyber-neon"></i>
                         </div>
+                        <h3 class="text-2xl font-black text-white mb-3">Individual & Anti-Crime Protection</h3>
+                        <p class="text-slate-400 text-sm mb-6">Complete personal immunity against everyday digital crime, financial scams, and identity theft.</p>
+                        
+                        <ul class="space-y-3 text-sm text-slate-300 font-mono">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Real-Time UPI & Banking Fraud Blocker</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Phishing & Malicious Link Freezer</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> AI Voice Clone & Deepfake Detector</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Dark-Web Password & ID Leak Neutralizer</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-cyber-border flex items-center justify-between text-xs font-mono text-cyber-neon">
+                        <span>STATUS: ZERO-CRIME PROTOCOL</span>
+                        <span>100% PROTECTED</span>
+                    </div>
+                </div>
+
+                <!-- Tier 2: Enterprise & Cloud -->
+                <div class="p-8 rounded-3xl bg-gradient-to-b from-cyber-card to-cyber-void border-2 border-cyber-emerald shadow-2xl glow-emerald flex flex-col justify-between relative">
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cyber-emerald text-black font-mono text-[10px] font-black tracking-widest uppercase">
+                        CORE ENTERPRISE ENGINE
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3 py-1 rounded-full bg-cyber-emerald/10 text-cyber-emerald font-mono text-xs font-bold">TIER 02 // ENTERPRISE CLOUD</span>
+                            <i class="fa-solid fa-server text-2xl text-cyber-emerald"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-3">Autonomous Business & Cloud Fortress</h3>
+                        <p class="text-slate-400 text-sm mb-6">Self-healing security operations center (SOC) that defends websites, APIs, apps, and cloud clusters 24/7.</p>
+                        
+                        <ul class="space-y-3 text-sm text-slate-300 font-mono">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Autonomous AI Red-Team Pentesting</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Zero-Ransomware Immutable Snapshots</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Multi-Terabit DDoS Anycast Scrubbing</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Auto-Patching Source Code Sentinel</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-cyber-border flex items-center justify-between text-xs font-mono text-cyber-emerald">
+                        <span>STATUS: SELF-HEALING MESH</span>
+                        <span>0.01ms LATENCY</span>
+                    </div>
+                </div>
+
+                <!-- Tier 3: Sovereign & Defense -->
+                <div class="p-8 rounded-3xl bg-gradient-to-b from-cyber-card to-cyber-void border-2 border-cyber-border hover:border-cyber-purple transition flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3 py-1 rounded-full bg-cyber-purple/10 text-cyber-purple font-mono text-xs font-bold">TIER 03 // SOVEREIGN GRID</span>
+                            <i class="fa-solid fa-satellite text-2xl text-cyber-purple"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-white mb-3">Critical Infrastructure & AI Immunity</h3>
+                        <p class="text-slate-400 text-sm mb-6">High-security air-gapped defense for banking backbones, defense grids, and frontier AI models.</p>
+                        
+                        <ul class="space-y-3 text-sm text-slate-300 font-mono">
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Rogue AGI & Exploit Bot Containment</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> Air-Gapped Sovereign Telemetry Mesh</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> LLM Prompt-Injection Firewall</li>
+                            <li class="flex items-center gap-2.5"><i class="fa-solid fa-check text-cyber-emerald"></i> 1-Click Emergency SOS Grid Isolation</li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-cyber-border flex items-center justify-between text-xs font-mono text-cyber-purple">
+                        <span>STATUS: LEVEL-9 CLASSIFIED</span>
+                        <span>AIR-GAPPED READY</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 2: INTERACTIVE LIVE SECURITY AUDIT WIDGET -->
-    <section id="scanner" class="py-20 relative z-10 border-t border-cyber-border">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <span class="text-xs font-mono text-cyber-emerald tracking-widest uppercase font-bold">[ PUBLIC VULNERABILITY AUDITOR ]</span>
-            <h2 class="text-3xl sm:text-5xl font-black text-white mt-1 mb-4">Run an Instant AI Perimeter Audit</h2>
-            <p class="text-slate-400 text-sm max-w-xl mx-auto mb-8 font-sans">
-                Enter any domain, IP address or endpoint to test simulated perimeter vulnerability detection powered by Gopsentry.
-            </p>
-
-            <!-- Interactive Audit Box -->
-            <div class="p-6 sm:p-8 rounded-2xl bg-cyber-panel border-2 border-cyber-border shadow-2xl glow-neon text-left">
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <span class="absolute left-4 top-3.5 text-slate-500 font-mono"><i class="fa-solid fa-globe"></i></span>
-                        <input id="targetInput" type="text" placeholder="example.com or 192.168.1.1" value="google.com" class="w-full bg-cyber-black border border-cyber-border rounded-xl pl-11 pr-4 py-3 font-mono text-sm text-white focus:outline-none focus:border-cyber-neon transition">
-                    </div>
-                    <button onclick="executeAudit()" class="px-6 py-3 rounded-xl bg-cyber-neon text-black font-mono font-bold text-sm hover:bg-white transition flex items-center justify-center gap-2 glow-neon">
-                        <i class="fa-solid fa-play text-xs"></i>
-                        <span>ANALYZE NOW</span>
-                    </button>
-                </div>
-
-                <!-- Scan Progress Bar -->
-                <div id="scanProgressContainer" class="hidden mt-6">
-                    <div class="flex justify-between text-xs font-mono text-slate-400 mb-1">
-                        <span id="scanStatusText">Injecting AI heuristics...</span>
-                        <span id="scanPercent">0%</span>
-                    </div>
-                    <div class="w-full h-2 bg-cyber-black rounded-full overflow-hidden border border-cyber-border">
-                        <div id="scanProgressBar" class="h-full bg-gradient-to-r from-cyber-neon to-cyber-emerald w-0 transition-all duration-300"></div>
-                    </div>
-                </div>
-
-                <!-- Scan Results Display -->
-                <div id="scanResultCard" class="hidden mt-6 p-4 rounded-xl bg-cyber-black border border-cyber-emerald font-mono text-xs text-slate-300">
-                    <div class="flex items-center gap-2 text-cyber-emerald font-bold text-sm mb-2">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <span>PERIMETER EVALUATION COMPLETE</span>
-                    </div>
-                    <p class="text-slate-400">Target: <span id="scannedDomain" class="text-white"></span></p>
-                    <p class="mt-1 text-slate-300">SSL Integrity: <span class="text-cyber-emerald font-bold">A+ Valid</span> | Threat Score: <span class="text-cyber-neon font-bold">0.0 (Clean)</span></p>
-                    <p class="mt-1 text-slate-400">Recommendation: Ready for zero-trust Gopsentry daemon binding.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 3: INTERACTIVE LIVE DEFENSE TERMINAL -->
-    <section id="terminal" class="py-20 bg-cyber-panel/30 border-t border-cyber-border relative z-10">
+    <!-- SECTION 3: INTERACTIVE AI-VS-AI WARFARE SIMULATOR (TEST THE UNBREAKABLE SYSTEM) -->
+    <section id="simulator" class="py-24 bg-cyber-panel/70 border-t border-cyber-border relative z-10">
         <div class="max-w-5xl mx-auto px-6">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8">
-                <div>
-                    <span class="text-xs font-mono text-cyber-purple tracking-widest uppercase font-bold">[ CLI EMULATOR ]</span>
-                    <h2 class="text-3xl font-extrabold text-white mt-1">Autonomous Threat Interceptor</h2>
-                </div>
-                <!-- Interactive Action Buttons -->
-                <div class="flex flex-wrap gap-2 mt-4 sm:mt-0 font-mono text-xs">
-                    <button onclick="simulateAction('scan')" class="px-3 py-1.5 rounded-lg bg-cyber-panel border border-cyber-border hover:border-cyber-neon text-cyber-neon transition">
-                        $ scan_mesh
-                    </button>
-                    <button onclick="simulateAction('ddos')" class="px-3 py-1.5 rounded-lg bg-cyber-panel border border-cyber-border hover:border-cyber-alert text-cyber-alert transition">
-                        $ test_ddos
-                    </button>
-                    <button onclick="simulateAction('crypto')" class="px-3 py-1.5 rounded-lg bg-cyber-panel border border-cyber-border hover:border-cyber-emerald text-cyber-emerald transition">
-                        $ sync_quantum
-                    </button>
-                </div>
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-mono text-cyber-alert tracking-widest uppercase font-bold">[ LIVE COUNTER-MEASURE LAB ]</span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white mt-2">Try to Break Gopsentry (Live Simulation)</h2>
+                <p class="text-slate-400 text-sm mt-2">
+                    Trigger any world-class cyber attack or rogue AI intrusion below and watch how Gopsentry's autonomous core neutralizes it in real-time.
+                </p>
             </div>
 
-            <!-- Terminal Window -->
-            <div class="rounded-2xl bg-black border border-cyber-border shadow-2xl overflow-hidden font-mono text-xs sm:text-sm">
-                <!-- Top Bar -->
-                <div class="px-4 py-3 bg-cyber-panel border-b border-cyber-border flex items-center justify-between">
+            <!-- Attack Trigger Buttons -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 font-mono text-xs">
+                <button onclick="runWarfareSim('agi')" class="p-3.5 rounded-xl bg-cyber-card border border-cyber-alert/50 hover:bg-cyber-alert hover:text-black text-cyber-alert font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-skull-crossbones"></i>
+                    <span>1. ROGUE AI ATTACK</span>
+                </button>
+                <button onclick="runWarfareSim('fraud')" class="p-3.5 rounded-xl bg-cyber-card border border-cyber-neon/50 hover:bg-cyber-neon hover:text-black text-cyber-neon font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-Mask"></i>
+                    <span>2. PHISHING / SCAM</span>
+                </button>
+                <button onclick="runWarfareSim('quantum')" class="p-3.5 rounded-xl bg-cyber-card border border-cyber-purple/50 hover:bg-cyber-purple hover:text-black text-cyber-purple font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-atom"></i>
+                    <span>3. QUANTUM BRUTE</span>
+                </button>
+                <button onclick="runWarfareSim('morph')" class="p-3.5 rounded-xl bg-cyber-card border border-cyber-emerald/50 hover:bg-cyber-emerald hover:text-black text-cyber-emerald font-bold transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>4. FORCE MORPH</span>
+                </button>
+            </div>
+
+            <!-- Interactive Warfare Terminal -->
+            <div class="rounded-2xl bg-black border-2 border-cyber-border shadow-2xl overflow-hidden font-mono text-xs sm:text-sm">
+                <div class="px-5 py-3.5 bg-cyber-card border-b border-cyber-border flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
-                        <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
-                        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
-                        <span class="ml-3 text-xs text-slate-400">gopsentry-agent-v1.4.2 [daemon: active]</span>
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        <span class="ml-3 text-slate-400">gopsentry-immune-kernel :: v2.0-unbreakable</span>
                     </div>
-                    <span class="text-[11px] text-cyber-emerald font-bold flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock"></i> ZERO-TRUST SECURED
+                    <span class="px-2.5 py-0.5 rounded bg-cyber-emerald/10 text-cyber-emerald border border-cyber-emerald/30 text-[11px] font-bold">
+                        BREACHES: 0
                     </span>
                 </div>
 
-                <!-- Console Body -->
-                <div id="terminalBody" class="p-6 space-y-2 h-72 overflow-y-auto leading-relaxed text-slate-300">
-                    <p class="text-slate-500">// GOPSENTRY Autonomous Neural Defense CLI Initialized...</p>
-                    <p class="text-cyber-neon">[SYS]: Loading predictive threat signatures (2,400,000 vectors loaded)... Done.</p>
-                    <p class="text-slate-400">[KERNEL]: Anycast firewall clusters bound across 42 global edge locations.</p>
-                    <p class="text-cyber-emerald">[SENTRY]: Monitoring active inbound streams. Status: 100% Secure.</p>
-                    <p class="text-yellow-400 font-bold">$ Ready. Select an action command above to simulate live interception_</p>
+                <div id="warfareConsole" class="p-6 space-y-2.5 h-80 overflow-y-auto leading-relaxed text-slate-300">
+                    <p class="text-slate-500">// GOPSENTRY Unified Cyber Immune OS initialized by Gopal Kumar...</p>
+                    <p class="text-cyber-neon">[FORMAL-PROOF]: Mathematical memory safety verified. Zero exploitable vectors exist.</p>
+                    <p class="text-cyber-purple">[POLYMORPHIC-ENGINE]: Memory address space shifting every 50ms.</p>
+                    <p class="text-cyber-emerald">[CITIZEN-TO-NATION]: All 3 defense tiers online and synchronized.</p>
+                    <p class="text-yellow-400 font-bold">$ Click any attack vector button above to test system immunity_</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 4: ARCHITECT & FOUNDER SPOTLIGHT -->
-    <section id="founder" class="py-24 border-t border-cyber-border relative z-10 bg-cyber-black">
-        <div class="max-w-4xl mx-auto px-6">
-            <div class="p-8 sm:p-12 rounded-3xl bg-cyber-panel border-2 border-cyber-border shadow-2xl flex flex-col md:flex-row items-center gap-8">
-                <!-- Avatar Emblem -->
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-gradient-to-tr from-cyber-neon via-cyber-purple to-cyber-emerald p-1 shadow-2xl flex-shrink-0">
-                    <div class="w-full h-full bg-cyber-black rounded-2xl flex items-center justify-center text-5xl text-cyber-neon font-black font-mono">
-                        GS
+    <!-- SECTION 4: INSTANT GLOBAL PERIMETER AUDITOR -->
+    <section id="scanner" class="py-24 border-t border-cyber-border relative z-10">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <span class="text-xs font-mono text-cyber-neon tracking-widest uppercase font-bold">[ INSTANT DIAGNOSTIC ]</span>
+            <h2 class="text-3xl sm:text-5xl font-black text-white mt-2 mb-4">Unified Security Diagnostic Scanner</h2>
+            <p class="text-slate-400 text-sm max-w-xl mx-auto mb-8">
+                Enter any website URL, IP address, or digital asset to simulate a Gopsentry 360° vulnerability and fraud immunity check.
+            </p>
+
+            <div class="p-6 sm:p-8 rounded-3xl bg-cyber-panel border-2 border-cyber-border shadow-2xl glow-neon text-left">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input id="auditInput" type="text" value="gopsentry.github.io" placeholder="Enter domain or IP..." class="flex-1 bg-black border border-cyber-border rounded-xl px-5 py-4 font-mono text-sm text-white focus:outline-none focus:border-cyber-neon">
+                    <button onclick="runDiagnostic()" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyber-neon to-cyber-emerald text-black font-mono font-black text-sm hover:opacity-95 transition">
+                        SCAN & PROTECT
+                    </button>
+                </div>
+
+                <div id="auditProgressBox" class="hidden mt-6">
+                    <div class="flex justify-between text-xs font-mono text-cyber-neon mb-1.5">
+                        <span id="auditStepText">Scanning cryptographic headers...</span>
+                        <span id="auditPct">0%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-black rounded-full overflow-hidden border border-cyber-border">
+                        <div id="auditBar" class="h-full bg-gradient-to-r from-cyber-neon to-cyber-emerald w-0 transition-all duration-300"></div>
                     </div>
                 </div>
 
-                <!-- Info -->
-                <div class="text-left">
+                <div id="auditResultBox" class="hidden mt-6 p-5 rounded-2xl bg-black border border-cyber-emerald font-mono text-xs space-y-2">
+                    <div class="text-cyber-emerald font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-shield-check"></i>
+                        <span>GOPSENTRY IMMUNITY REPORT: READY FOR PROTECTION</span>
+                    </div>
+                    <p class="text-slate-300">Target Asset: <span id="resAsset" class="text-white font-bold"></span></p>
+                    <p class="text-slate-400">Anti-Phishing & Fraud Lock: <span class="text-cyber-emerald">Verified</span> | AI-Intrusion Shield: <span class="text-cyber-neon">Kyber-1024 Ready</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: FOUNDER & CHIEF ARCHITECT -->
+    <section id="architect" class="py-24 bg-cyber-panel/40 border-t border-cyber-border relative z-10">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="p-8 sm:p-12 rounded-3xl bg-cyber-card border-2 border-cyber-border shadow-2xl flex flex-col md:flex-row items-center gap-8">
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-3xl bg-gradient-to-tr from-cyber-neon via-cyber-purple to-cyber-emerald p-1 shadow-2xl flex-shrink-0">
+                    <div class="w-full h-full bg-cyber-void rounded-3xl flex flex-col items-center justify-center font-mono">
+                        <span class="text-4xl font-black text-cyber-neon">GK</span>
+                        <span class="text-[9px] text-cyber-emerald tracking-widest mt-1">ARCHITECT</span>
+                    </div>
+                </div>
+
+                <div>
                     <div class="inline-block px-3 py-1 rounded-full bg-cyber-neon/10 border border-cyber-neon/30 text-xs font-mono text-cyber-neon font-bold mb-3">
                         FOUNDER & CHIEF ARCHITECT
                     </div>
                     <h3 class="text-3xl font-black text-white">Gopal Kumar</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed mt-3 font-sans">
-                        Founder of <strong>Gopsentry</strong>. Focused on adversarial machine learning, automated penetration testing engines, and self-healing cybersecurity infrastructure. Building tools to defend against the next generation of algorithmic threats.
+                    <p class="text-slate-300 text-sm leading-relaxed mt-3">
+                        Founder of <strong>Gopsentry</strong>. Driven by a singular mission: to create a world free from cyber crime and digital vulnerability. Architecting mathematically unbreakable, AI-immune security infrastructure that protects citizens, enterprises, and critical systems from one unified platform.
                     </p>
-
-                    <div class="mt-6 flex flex-wrap gap-4 font-mono text-xs">
-                        <span class="px-3 py-1.5 rounded-lg bg-cyber-black border border-cyber-border text-slate-300">#AI-Security</span>
-                        <span class="px-3 py-1.5 rounded-lg bg-cyber-black border border-cyber-border text-slate-300">#CyberDefense</span>
-                        <span class="px-3 py-1.5 rounded-lg bg-cyber-black border border-cyber-border text-slate-300">#ZeroTrust</span>
+                    <div class="mt-6 flex flex-wrap gap-3 font-mono text-xs">
+                        <a href="https://github.com/gopsentry" target="_blank" class="px-4 py-2 rounded-lg bg-black border border-cyber-border hover:border-cyber-neon text-cyber-neon transition flex items-center gap-2">
+                            <i class="fa-brands fa-github"></i> GitHub Organization
+                        </a>
+                        <span class="px-4 py-2 rounded-lg bg-black border border-cyber-border text-slate-400">
+                            <i class="fa-solid fa-lock text-cyber-emerald mr-1"></i> Zero-Trust Pioneer
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-16 bg-black border-t border-cyber-border relative z-10 font-mono text-xs">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <div class="flex items-center justify-center space-x-3 mb-6">
-                <div class="w-8 h-8 rounded-lg bg-cyber-neon text-black font-extrabold flex items-center justify-center text-sm">
-                    <i class="fa-solid fa-shield"></i>
-                </div>
-                <span class="text-xl font-black tracking-tight text-white">GOPSENTRY</span>
+    <!-- FOOTER -->
+    <footer class="py-14 bg-black border-t border-cyber-border relative z-10 font-mono text-xs text-center">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <span class="text-xl font-black text-white">GOP<span class="text-cyber-neon">SENTRY</span>™</span>
             </div>
-
-            <!-- Social Links -->
-            <div class="flex justify-center space-x-6 text-lg mb-8 text-slate-400">
-                <a href="https://github.com/gopsentry" target="_blank" class="hover:text-cyber-neon transition"><i class="fa-brands fa-github"></i></a>
-                <a href="https://linkedin.com" target="_blank" class="hover:text-cyber-neon transition"><i class="fa-brands fa-linkedin"></i></a>
-                <a href="mailto:contact@gopsentry.com" class="hover:text-cyber-neon transition"><i class="fa-solid fa-envelope"></i></a>
-            </div>
-
+            <p class="text-slate-400 max-w-md mx-auto mb-6">
+                The Unified Global Cyber Defense Operating System. Unbreakable by Design.
+            </p>
             <p class="text-slate-600">
-                &copy; 2026 GOPSENTRY. All Rights Reserved. Engineered with Pride by Gopal Kumar.
+                &copy; 2026 GOPSENTRY. All Rights Reserved Worldwide. Founded & Engineered by <strong class="text-slate-400">Gopal Kumar</strong>.
             </p>
         </div>
     </footer>
 
-    <!-- // FOR SEARCH Interactive Scripts: Web Audio API, Canvas Animation, CLI Logic -->
+    <!-- SCRIPTS: AUDIO ENGINE, POLYMORPHIC HASH ROTATOR, AI-VS-AI SIMULATOR -->
     <script>
-        // 1. // FOR SEARCH WEB AUDIO API SYNTHESIZER (Sci-Fi Sound Effects)
-        let audioEnabled = true;
+        // 1. Web Audio Sci-Fi SFX
+        let soundOn = true;
         let audioCtx = null;
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
-
         function toggleAudio() {
-            audioEnabled = !audioEnabled;
-            const icon = document.getElementById('audioIcon');
-            if (audioEnabled) {
-                icon.className = 'fa-solid fa-volume-high text-cyber-emerald';
-                playCyberSound('beep');
-            } else {
-                icon.className = 'fa-solid fa-volume-xmark text-slate-500';
-            }
+            soundOn = !soundOn;
+            document.getElementById('audioIcon').className = soundOn
+                ? 'fa-solid fa-volume-high text-sm text-cyber-emerald'
+                : 'fa-solid fa-volume-xmark text-sm text-slate-500';
+            if (soundOn) playSfx('beep');
         }
 
-        function playCyberSound(type) {
-            if (!audioEnabled) return;
+        function playSfx(type) {
+            if (!soundOn) return;
             try {
-                initAudio();
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
-
                 const now = audioCtx.currentTime;
+
                 if (type === 'beep') {
-                    osc.frequency.setValueAtTime(800, now);
-                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.08);
-                    gain.gain.setValueAtTime(0.15, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                    osc.start(now);
-                    osc.stop(now + 0.08);
+                    osc.frequency.setValueAtTime(900, now);
+                    osc.frequency.exponentialRampToValueAtTime(1400, now + 0.07);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.07);
+                    osc.start(now); osc.stop(now + 0.07);
                 } else if (type === 'click') {
-                    osc.frequency.setValueAtTime(300, now);
-                    osc.frequency.exponentialRampToValueAtTime(600, now + 0.05);
-                    gain.gain.setValueAtTime(0.2, now);
+                    osc.frequency.setValueAtTime(350, now);
+                    osc.frequency.exponentialRampToValueAtTime(700, now + 0.05);
+                    gain.gain.setValueAtTime(0.15, now);
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-                    osc.start(now);
-                    osc.stop(now + 0.05);
+                    osc.start(now); osc.stop(now + 0.05);
                 } else if (type === 'launch') {
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(200, now);
-                    osc.frequency.exponentialRampToValueAtTime(1800, now + 0.25);
-                    gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                    osc.start(now);
-                    osc.stop(now + 0.25);
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.exponentialRampToValueAtTime(1600, now + 0.22);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
+                    osc.start(now); osc.stop(now + 0.22);
                 }
             } catch(e) {}
         }
 
-        // 2. // FOR SEARCH INTERACTIVE PARTICLES CANVAS (Neural Cyber Mesh)
-        const canvas = document.getElementById('neuralCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let mouse = { x: null, y: null };
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        // 2. Live Polymorphic Key Morphing Bar & Counter
+        function generateRandomHex(len) {
+            const chars = '0123456789ABCDEF';
+            let out = '0x';
+            for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * 16)];
+            return out;
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
 
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
-        });
+        setInterval(() => {
+            const hashEl = document.getElementById('liveKeyHash');
+            if (hashEl) hashEl.innerText = generateRandomHex(6) + '...' + generateRandomHex(8);
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 1;
-                this.speedX = (Math.random() - 0.5) * 0.8;
-                this.speedY = (Math.random() - 0.5) * 0.8;
+            const counterEl = document.getElementById('threatCounter');
+            if (counterEl) {
+                let val = parseInt(counterEl.innerText.replace(/,/g, ''));
+                val += Math.floor(Math.random() * 7) + 2;
+                counterEl.innerText = val.toLocaleString();
             }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x > canvas.width || this.x < 0) this.speedX *= -1;
-                if (this.y > canvas.height || this.y < 0) this.speedY *= -1;
-            }
-            draw() {
-                ctx.fillStyle = '#00F0FF';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+        }, 1400);
 
-        for (let i = 0; i < 50; i++) {
-            particles.push(new Particle());
-        }
+        // 3. AI-vs-AI Warfare Lab Simulator
+        function runWarfareSim(mode) {
+            playSfx('launch');
+            const box = document.getElementById('warfareConsole');
+            const t = new Date().toLocaleTimeString();
 
-        function animateCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((p, index) => {
-                p.update();
-                p.draw();
-                for (let j = index + 1; j < particles.length; j++) {
-                    const dx = p.x - particles[j].x;
-                    const dy = p.y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 120) {
-                        ctx.strokeStyle = `rgba(0, 240, 255, ${1 - dist / 120 * 0.8})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            });
-            requestAnimationFrame(animateCanvas);
-        }
-        animateCanvas();
-
-        // 3. // FOR SEARCH INTERACTIVE CLI SIMULATOR
-        function simulateAction(action) {
-            playCyberSound('beep');
-            const term = document.getElementById('terminalBody');
-            const time = new Date().toLocaleTimeString();
-
-            if (action === 'scan') {
-                term.innerHTML += `<p class="text-cyber-neon">[${time}] > EXECUTING: Mesh perimeter integrity verification...</p>`;
+            if (mode === 'agi') {
+                box.innerHTML += `<p class="text-cyber-alert">[${t}] ⚠️ INTRUSION DETECTED: Autonomous Rogue AGI attempting zero-day kernel probe...</p>`;
                 setTimeout(() => {
-                    term.innerHTML += `<p class="text-cyber-emerald">[${time}] > SCAN COMPLETE: 24 nodes verified. No unauthorized lateral movement detected.</p>`;
-                    term.scrollTop = term.scrollHeight;
-                }, 400);
-            } else if (action === 'ddos') {
-                term.innerHTML += `<p class="text-cyber-alert">[${time}] > ALERT: Simulated 400 Gbps volumetric traffic generated on ingress...</p>`;
+                    box.innerHTML += `<p class="text-cyber-purple">[${t}] 🛡️ GOPSENTRY MIRROR-TRAP: Redirecting attacking AI into Synthetic Phantom Honeypot...</p>`;
+                    box.scrollTop = box.scrollHeight;
+                }, 350);
                 setTimeout(() => {
-                    term.innerHTML += `<p class="text-cyber-emerald">[${time}] > COUNTERMEASURE: Anycast filter scrubbed 100% packets. Zero packet loss.</p>`;
-                    term.scrollTop = term.scrollHeight;
-                }, 400);
-            } else if (action === 'crypto') {
-                term.innerHTML += `<p class="text-cyber-purple">[${time}] > RE-KEYING: Rotating Kyber-1024 Quantum Post-Quantum Keys...</p>`;
+                    box.innerHTML += `<p class="text-cyber-emerald font-bold">[${t}] ✅ NEUTRALIZED: Rogue AI logic frozen in 0.02ms. Core system untouched (0% breach).</p>`;
+                    box.scrollTop = box.scrollHeight;
+                    playSfx('beep');
+                }, 800);
+            } else if (mode === 'fraud') {
+                box.innerHTML += `<p class="text-cyber-neon">[${t}] 🔍 CITIZEN-SHIELD: Intercepted suspicious UPI / Phishing payload & deepfake signature...</p>`;
                 setTimeout(() => {
-                    term.innerHTML += `<p class="text-cyber-emerald">[${time}] > SYNCED: All session tunnels upgraded to post-quantum confidentiality.</p>`;
-                    term.scrollTop = term.scrollHeight;
-                }, 400);
+                    box.innerHTML += `<p class="text-cyber-emerald font-bold">[${t}] ✅ BLOCKED: Malicious link quarantined globally. User funds & identity 100% safe.</p>`;
+                    box.scrollTop = box.scrollHeight;
+                    playSfx('beep');
+                }, 500);
+            } else if (mode === 'quantum') {
+                box.innerHTML += `<p class="text-cyber-purple">[${t}] ⚛️ QUANTUM PROBE: 4096-Qubit decryption attempt detected on perimeter...</p>`;
+                setTimeout(() => {
+                    box.innerHTML += `<p class="text-cyber-emerald font-bold">[${t}] ✅ IMMUNE: Kyber-1024 Lattice Cryptography deflected quantum brute-force.</p>`;
+                    box.scrollTop = box.scrollHeight;
+                    playSfx('beep');
+                }, 500);
+            } else if (mode === 'morph') {
+                const newHash = generateRandomHex(16);
+                box.innerHTML += `<p class="text-cyber-emerald font-bold">[${t}] 🔄 POLYMORPHIC SHIFT: Entire memory topology & port matrix morphed to [${newHash}].</p>`;
+                box.scrollTop = box.scrollHeight;
             }
-            term.scrollTop = term.scrollHeight;
+            box.scrollTop = box.scrollHeight;
         }
 
-        // 4. // FOR SEARCH INTERACTIVE AUDIT RUNNER
-        function executeAudit() {
-            playCyberSound('launch');
-            const target = document.getElementById('targetInput').value || 'target-domain.com';
-            const progressContainer = document.getElementById('scanProgressContainer');
-            const progressBar = document.getElementById('scanProgressBar');
-            const percentText = document.getElementById('scanPercent');
-            const statusText = document.getElementById('scanStatusText');
-            const resultCard = document.getElementById('scanResultCard');
+        // 4. Diagnostic Scanner
+        function runDiagnostic() {
+            playSfx('launch');
+            const target = document.getElementById('auditInput').value || 'gopsentry.github.io';
+            const pBox = document.getElementById('auditProgressBox');
+            const rBox = document.getElementById('auditResultBox');
+            const bar = document.getElementById('auditBar');
+            const pct = document.getElementById('auditPct');
+            const txt = document.getElementById('auditStepText');
 
-            resultCard.classList.add('hidden');
-            progressContainer.classList.remove('hidden');
-            progressBar.style.width = '0%';
+            rBox.classList.add('hidden');
+            pBox.classList.remove('hidden');
+            bar.style.width = '0%';
 
             let p = 0;
-            const interval = setInterval(() => {
+            const timer = setInterval(() => {
                 p += 25;
-                progressBar.style.width = p + '%';
-                percentText.innerText = p + '%';
-                playCyberSound('beep');
-
-                if (p === 50) statusText.innerText = 'Analyzing SSL certificates and DNSSEC...';
-                if (p === 75) statusText.innerText = 'Evaluating AI firewall rules...';
-
+                bar.style.width = p + '%';
+                pct.innerText = p + '%';
+                playSfx('beep');
+                if (p === 50) txt.innerText = 'Verifying Post-Quantum & Anti-Fraud protocols...';
+                if (p === 75) txt.innerText = 'Binding Gopsentry Polymorphic Shield...';
                 if (p >= 100) {
-                    clearInterval(interval);
+                    clearInterval(timer);
                     setTimeout(() => {
-                        progressContainer.classList.add('hidden');
-                        document.getElementById('scannedDomain').innerText = target;
-                        resultCard.classList.remove('hidden');
-                        playCyberSound('click');
-                    }, 400);
+                        pBox.classList.add('hidden');
+                        document.getElementById('resAsset').innerText = target;
+                        rBox.classList.remove('hidden');
+                    }, 300);
                 }
             }, 300);
         }
 
-        // 5. // FOR SEARCH LIVE TICKING STATS COUNTER
-        setInterval(() => {
-            const stat = document.getElementById('stat1');
-            if (stat) {
-                let current = parseInt(stat.innerText.replace(/,/g, ''));
-                current += Math.floor(Math.random() * 5) + 1;
-                stat.innerText = current.toLocaleString();
-            }
-        }, 2000);
+        // 5. Neural Background Canvas
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let nodes = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        for (let i = 0; i < 45; i++) {
+            nodes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.7,
+                vy: (Math.random() - 0.5) * 0.7
+            });
+        }
+
+        function drawNodes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            nodes.forEach((n, i) => {
+                n.x += n.vx; n.y += n.vy;
+                if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+                if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+                ctx.fillStyle = '#00F0FF';
+                ctx.beginPath(); ctx.arc(n.x, n.y, 1.8, 0, Math.PI * 2); ctx.fill();
+
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = n.x - nodes[j].x, dy = n.y - nodes[j].y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 130) {
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${1 - d / 130})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(nodes[j].x, nodes[j].y); ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawNodes);
+        }
+        drawNodes();
     </script>
 </body>
 </html>
